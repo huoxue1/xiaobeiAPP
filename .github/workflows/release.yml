@@ -39,6 +39,7 @@ jobs:
       # 生成change-log
       - name: generate change-log
         uses: rcmachado/changelog-action@v1
+      - run: touch CHANGELOG.md
         with:
           args: fmt
       # 发布到 Release
