@@ -22,7 +22,7 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v1.3.0
         with:
-          java-version: "15.x"
+          java-version: 1.8
       # 建立 Flutter 环境
       - name: Flutter action
         uses: subosito/flutter-action@v1.1.1
