@@ -38,8 +38,8 @@ jobs:
       - run: flutter build apk --release
       # 生成change-log
       - name: generate change-log
-        uses: rcmachado/changelog-action@v1
       - run: touch CHANGELOG.md
+        uses: rcmachado/changelog-action@v1
         with:
           args: fmt
       # 发布到 Release
