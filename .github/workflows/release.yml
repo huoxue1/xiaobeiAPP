@@ -36,9 +36,9 @@ jobs:
       # - run: flutter test
       # 打包 APK
       - run: flutter build apk --release
+      - run: touch CHANGELOG.md
       # 生成change-log
       - name: generate change-log
-      - run: touch CHANGELOG.md
         uses: rcmachado/changelog-action@v1
         with:
           args: fmt
