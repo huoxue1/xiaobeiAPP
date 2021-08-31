@@ -42,11 +42,11 @@ jobs:
           args: fmt
       # 发布到 Release
       - name: Release
-          uses: softprops/action-gh-release@v1
-          with:
-            files: |
-              build/app/outputs/apk/release/*.apk
-            body_path: ${{ github.workspace }}-CHANGELOG.md
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/app/outputs/apk/release/*.apk
+          body_path: ${{ github.workspace }}-CHANGELOG.md
             # note you'll typically need to create a personal access token
             # with permissions to create releases in the other repo
-            token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.TOKEN }}
