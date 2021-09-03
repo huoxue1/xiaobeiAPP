@@ -37,10 +37,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _getCapther() async {
-    SQToast.show("正在登陆中");
+
     if(_userNameController.value.text==""&&_passwordController.value.text==""){
+      SQToast.show("请正确输入账号密码");
       return;
     }
+    SQToast.show("正在登陆中");
     Response response;
     var dio = Dio();
     response = await dio.get("https://xiaobei.yinghuaonline.com/prod-api/captchaImage",options: Options(headers: _headers));
@@ -60,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       ps.setString("token", data["token"]);
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AppHome()), (route) => false);
     }else{
-      SQToast.show("登录失败\n"+data['msg']);
+      SQToast.show("登录失败\n\t"+data['msg']);
       print(data["msg"]);
     }
 

@@ -18,6 +18,8 @@ jobs:
     steps:
       # 拉取项目代码
       - uses: actions/checkout@v2
+      - name: Set env
+        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/*/}
       # 建立 java 环境
       - name: Setup Java JDK
         uses: actions/setup-java@v2

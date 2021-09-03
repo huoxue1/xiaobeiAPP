@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xiaobei/page/app.dart';
 import 'package:xiaobei/page/login/login.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '',
 
-      home: LoginPage(),
+      home: AppHome(),
     );
   }
 }
