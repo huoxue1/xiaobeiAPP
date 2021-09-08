@@ -6,7 +6,7 @@ class SQToast {
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        fontSize: 25
+        fontSize: 16
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xiaobei/page/app.dart';
+import 'package:xiaobei/page/console/health.dart';
 import 'package:xiaobei/page/login/login.dart';
+import 'r.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,8 +14,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '',
+      routes: {
 
-      home: AppHome(),
+        "/":(context)=>AppHome(),
+        "/login":(context)=>LoginPage(),
+        "/console/health":(context)=>HealthPage(),
+      },
+      initialRoute: "/",
     );
   }
 }

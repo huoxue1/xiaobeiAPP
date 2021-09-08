@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +26,8 @@ class _MyState extends State<My> {
   var _info;
   var _user = {};
   var _studentInfo = {};
+  var _list;
+  var dio = Dio();
 
   @override
   void initState() {
@@ -50,7 +54,7 @@ class _MyState extends State<My> {
   }
 
   void getVersion() async {
-    var dio = Dio();
+
     SharedPreferences ps = await SharedPreferences.getInstance();
     if (!ps.containsKey("token")) {
       toLogin();
@@ -76,23 +80,54 @@ class _MyState extends State<My> {
         _user = _info["user"];
       });
     }
-    response = await dio.get(
-        "https://xiaobei.yinghuaonline.com/prod-api/student/studentInfo",
-        options: Options(headers: _headers));
-    Map<String, dynamic> data1 = response.data;
-    setState(() {
-      _studentInfo = data1["data"];
+    await getStudentInfo().then((value){
+      setState(() {
+        _studentInfo = value["data"];
+      });
+    });
+    
+    await getImage().then((value){
+      setState(() {
+        _list = Uint8List.fromList(value.data);
+      });
     });
 
   }
 
+
+  Future<Response> getImage() async {
+    Response response;
+    response = await dio.get(
+        "https://xiaobei.yinghuaonline.com/prod-api/image/get?path=/profilephoto/default.png",
+        options: Options(responseType: ResponseType.bytes));
+
+
+    return response;
+  }
+
+
+
+  Future<Map<String, dynamic>> getStudentInfo() async {
+    Response response;
+    response = await dio.get(
+        "https://xiaobei.yinghuaonline.com/prod-api/student/studentInfo",
+        options: Options(headers: _headers));
+    Map<String, dynamic> data1 = response.data;
+    return data1;
+  }
+
+
+  
+
+
+
   Widget getData(){
-    if(_studentInfo.length <= 0){
-      return new Text("正在加载中");
+    if(_studentInfo.length <= 0||_list.runtimeType == Null){
+      return new Center(child: Text("正在加载中",style: TextStyle(fontSize: 20,fontStyle: FontStyle.italic),),);
     }else{
       return new Positioned(
-          top: 100,
-          height: 400,
+          top: 70,
+          height: 450,
           left: 20,
           right: 20,
           child: Card(
@@ -104,21 +139,23 @@ class _MyState extends State<My> {
                 ),
               ),
               child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 40, 20, 0),
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
                   child: Column(
                     children: [
+
+                      CircleAvatar(backgroundImage: new MemoryImage(_list),radius: 30,backgroundColor: Colors.white,),
                       Row(
                         children: [
                           Spacer(),
                           new Text(_studentInfo["studentName"],
-                              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                           Spacer()
                         ],
                       ),
                       Row(
                         children: [
                           Spacer(),
-                          new Text("学生", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                          new Text("学生", style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                           Spacer()
                         ],
                       ),
@@ -126,7 +163,7 @@ class _MyState extends State<My> {
                         children: [
                           Spacer(),
                           new Text(_studentInfo["deptName"],
-                              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                           Spacer()
                         ],
                       ),
@@ -137,45 +174,45 @@ class _MyState extends State<My> {
                         children: [
                           new Text(
                             "手机",
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 16),
                           ),
                           Spacer(),
                           new Text(_user["phonenumber"].toString(),
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Row(
                         children: [
                           new Text(
                             "邮箱",
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 16),
                           ),
                           Spacer(),
                           new Text(_user["email"].toString(),
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Row(
                         children: [
                           new Text(
                             "学号",
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 16),
                           ),
                           Spacer(),
                           new Text(_studentInfo["studentNumber"].toString(),
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Row(
                         children: [
                           new Text(
                             "入学时间",
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 16),
                           ),
                           Spacer(),
                           new Text(
                               _studentInfo["studentSchoolTime"].toString(),
-                              style: TextStyle(fontSize: 20))
+                              style: TextStyle(fontSize: 16))
                         ],
                       ),
                       Divider(),
@@ -211,8 +248,9 @@ class _MyState extends State<My> {
                         ],
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                       ),
-                    ],
-                  ))));
+                    ],mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  )
+              )));
     }
 
 

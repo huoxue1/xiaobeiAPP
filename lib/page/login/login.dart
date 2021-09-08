@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getCapther() async {
 
-    if(_userNameController.value.text==""&&_passwordController.value.text==""){
+    if(_userNameController.value.text==""||_passwordController.value.text==""){
       SQToast.show("请正确输入账号密码");
       return;
     }
@@ -47,20 +47,22 @@ class _LoginPageState extends State<LoginPage> {
     var dio = Dio();
     response = await dio.get("https://xiaobei.yinghuaonline.com/prod-api/captchaImage",options: Options(headers: _headers));
     Map<String,dynamic> cap= response.data;
-
+    print("123");
     response = await dio.post("https://xiaobei.yinghuaonline.com/prod-api/login",options: Options(headers: _headers),data: {
     "username": _userNameController.value.text,
     "password": encodeBase64(_passwordController.value.text),
     "code": cap["showCode"],
     "uuid": cap["uuid"]
     });
+    print(response.data);
     print(_userNameController.toString());
     print(encodeBase64(_passwordController.toString()));
     Map<String,dynamic> data = response.data;
     if (data["code"].toString()=="200"){
+      SQToast.show("登录成功，正在跳转");
       SharedPreferences ps = await SharedPreferences.getInstance();
       ps.setString("token", data["token"]);
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>AppHome()), (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
     }else{
       SQToast.show("登录失败\n\t"+data['msg']);
       print(data["msg"]);
@@ -93,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: TextField(
                     controller: _userNameController,
                     decoration: InputDecoration(
-                        prefixIcon: Image.asset('static/login/userName.png',width: 8,height: 8,)
+                        prefixIcon: Image.asset('static/login/userName.png',width: 4,height: 4,)
                     ),
                   ),
                     width: MediaQuery.of(context).size.width,
@@ -104,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                          prefixIcon: Image.asset('static/login/password.png',width: 8,height: 80,)
+                          prefixIcon: Image.asset('static/login/password.png',width: 4,height: 4,)
                       ),
                     ),
                     width: MediaQuery.of(context).size.width,
